@@ -1,9 +1,6 @@
-# 🎵 TrackTrace — Shazam-like Audio Fingerprinting System
+# 🎵 TrackTrace - Distributed Audio Recognition System Using Fingerprint Matching
 
-TrackTrace is an end-to-end **audio fingerprinting and song identification system** inspired by Shazam.
-It identifies songs from short, noisy audio clips using **acoustic fingerprints (hashes)** — without storing raw song files.
-
-This project focuses on **signal processing, scalable backend design, and real-world failure handling**, not just a demo that “works once”.
+TrackTrace is an end-to-end **audio recognition system** that identifies songs from **short, noisy audio clips** by transforming music into compact **acoustic fingerprints** instead of **storing raw audio files**. Using the ***Short-Time Fourier Transform (STFT)*** to analyze audio in the **time–frequency domain**, the system extracts stable **spectral landmarks** and applies **offset-based voting** to match partial recordings against a **pre-indexed fingerprint catalog**, achieving high robustness to background noise and recording quality. TrackTrace is built around **real-world constraints** such as **unreliable input**, **confidence-based rejection**, and a **scalable backend architecture**, offering a practical view into how modern **large-scale audio identification** systems operate
 
 ---
 
@@ -33,10 +30,9 @@ This project focuses on **signal processing, scalable backend design, and real-w
 > Songs are not stored.
 > **Acoustic fingerprints are stored.**
 
-Each song is converted into thousands of compact hashes derived from stable spectral features.
-Incoming audio is fingerprinted the same way and matched using **time-offset voting**.
+Each song is first transformed using the ***Short-Time Fourier Transform (STFT)***, which represents audio as a **time–frequency map** and reveals **stable spectral patterns** that persist despite noise or recording quality. From this representation, TrackTrace extracts thousands of **compact fingerprint hashes** based on robust spectral landmarks. Incoming audio is processed through the same pipeline and matched using **time-offset voting**, allowing reliable identification from partial or noisy clips.
 
-This mirrors how real-world systems like Shazam work.
+This approach reflects how modern large-scale audio identification systems are designed to balance **robustness, efficiency, and scalability**.
 
 ---
 
@@ -109,7 +105,7 @@ For an incoming clip:
 
    * Look up matching hashes in Redis/PostgreSQL
 3. Compute **time offset differences**
-4. Vote per `(song_id, offset)`
+4. Vote per `(song_id, song_offset)`
 5. The strongest offset cluster wins
 
 This approach:
