@@ -1,7 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.ndimage import maximum_filter
-
 def generate_fingerprints(
     peaks: list[tuple[int, int]],
     fan_value: int = 5,

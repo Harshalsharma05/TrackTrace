@@ -1,7 +1,5 @@
 import numpy as np
 import librosa
-import matplotlib.pyplot as plt
-from scipy.ndimage import maximum_filter
 
 def load_and_preprocess_audio(
     file_path: str,

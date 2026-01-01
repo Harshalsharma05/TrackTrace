@@ -1,7 +1,5 @@
 import numpy as np
 import librosa
-import matplotlib.pyplot as plt
-from scipy.ndimage import maximum_filter
 
 def compute_spectrogram(
     audio: np.ndarray,
