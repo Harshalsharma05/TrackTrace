@@ -98,6 +98,16 @@ with st.sidebar:
 
     st.info("**Instructions:**\n1. Tap Mic to start (Turns Red).\n2. Tap again to stop.\n3. Try to capture clear audio for best results.")
     
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style='text-align: center; font-size: 0.85rem; color: #888;'>
+            Built by <a href="https://github.com/Harshalsharma05" target="_blank" style="color:#00d2ff; text-decoration: none;">Harshal Sharma</a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
 if st.session_state.show_stats_page:
     st.markdown("## System Statistics")
 
@@ -139,6 +149,17 @@ if st.session_state.show_stats_page:
                 Frequently used fingerprints and lookup results are cached in **Redis** 
                 to keep identification fast and consistent, even as the catalog grows.
                 """
+            )
+            
+            st.markdown(
+                """
+                <div style='text-align: center; margin-top: 20px;'>
+                    <a href="https://github.com/Harshalsharma05/TrackTrace" target="_blank" style="color:#00d2ff; text-decoration: none;">
+                        See GitHub Repository →
+                    </a>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
         else:
             st.error("Failed to fetch stats from backend.")
