@@ -1,11 +1,13 @@
 import streamlit as st
 import requests
 from audio_recorder_streamlit import audio_recorder
-import io
+import os
 
 # --- CONFIGURATION ---
-BACKEND_URL = "http://127.0.0.1:8000/identify"
-STATS_URL = "http://127.0.0.1:8000/stats"
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
+IDENTIFY_ENDPOINT = f"{BACKEND_BASE_URL}/identify"
+STATS_ENDPOINT = f"{BACKEND_BASE_URL}/stats"
+
 MAX_DURATION_SEC = 20
 # Approx bytes for 20s at 48kHz, 16-bit mono (48000 * 2 * 20)
 MAX_BYTES_LIMIT = 48000 * 2 * MAX_DURATION_SEC 
@@ -101,7 +103,7 @@ if st.session_state.show_stats_page:
 
     try:
         with st.spinner("Fetching system stats..."):
-            stats_response = requests.get(STATS_URL, timeout=5)
+            stats_response = requests.get(STATS_ENDPOINT, timeout=5)
 
         if stats_response.status_code == 200:
             stats = stats_response.json()
@@ -287,7 +289,7 @@ if audio_bytes and (len(audio_bytes) >= MIN_BYTES_FOR_IDENTIFICATION):
             try:
                 # 1. Sending Request
                 st.write("📤 Identifying...")
-                response = requests.post(BACKEND_URL, files=files, timeout=60)
+                response = requests.post(IDENTIFY_ENDPOINT, files=files, timeout=60)
                 
                 # 2. Handling Response
                 if response.status_code == 200:
