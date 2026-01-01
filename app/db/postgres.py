@@ -1,14 +1,9 @@
 import psycopg2
 from psycopg2.extras import execute_values
+from app.config import DATABASE_URL
 
 def get_db_connection():
-    return psycopg2.connect(
-        dbname="audio_fingerprint",
-        user="postgres",
-        password="admin@123",
-        host="localhost",
-        port=5432
-    )
+    return psycopg2.connect(DATABASE_URL)
 
 conn = get_db_connection()
 cur = conn.cursor()

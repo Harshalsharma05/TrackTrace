@@ -1,13 +1,9 @@
 import redis
 import json
+from app.config import REDIS_URL
 
 def get_redis_client():
-    return redis.Redis(
-        host="localhost",
-        port=6379,
-        db=0,
-        decode_responses=True  # important: returns strings, not bytes
-    )
+    return redis.from_url(REDIS_URL, decode_responses=True)
 
 def fetch_matches_with_cache(cur, redis_client, hash_key: str):
     redis_key = f"fp:{hash_key}"
