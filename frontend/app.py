@@ -2,11 +2,15 @@ import streamlit as st
 import requests
 from audio_recorder_streamlit import audio_recorder
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # --- CONFIGURATION ---
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL")
 IDENTIFY_ENDPOINT = f"{BACKEND_BASE_URL}/identify"
 STATS_ENDPOINT = f"{BACKEND_BASE_URL}/stats"
+HEALTH_ENDPOINT = f"{BACKEND_BASE_URL}/health"
 
 MAX_DURATION_SEC = 20
 # Approx bytes for 20s at 48kHz, 16-bit mono (48000 * 2 * 20)
@@ -85,6 +89,55 @@ def trim_audio_bytes(audio_data: bytes) -> bytes:
 # --- SESSION STATE INITIALIZATION ---
 if 'show_stats_page' not in st.session_state:
     st.session_state.show_stats_page = False
+if 'health_check_done' not in st.session_state:
+    st.session_state.health_check_done = False
+
+# --- HEALTH CHECK ---
+if not st.session_state.health_check_done:
+    st.markdown('<div class="main-title">TrackTrace 🎵</div>', unsafe_allow_html=True)
+    st.markdown("<div style='text-align: center; color: #aaa; margin-bottom: 30px;'>Initializing system...</div>", unsafe_allow_html=True)
+    
+    with st.spinner(""):
+        st.markdown(
+            """
+            <div style='text-align: center; color: #bbb; font-size: 1.1rem; margin: 40px 0;'>
+                <i>"Music is the universal language of mankind."</i><br>
+                <span style='font-size: 0.9rem; color: #888;'>— Henry Wadsworth Longfellow</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        try:
+            health_response = requests.get(HEALTH_ENDPOINT, timeout=20)
+            
+            if health_response.status_code == 200:
+                health_data = health_response.json()
+                
+                if (health_data.get("status") == "ok" and 
+                    health_data.get("postgres") == "ok" and 
+                    health_data.get("redis") == "ok"):
+                    
+                    st.session_state.health_check_done = True
+                    st.success("✅ System ready!")
+                    st.rerun()
+                else:
+                    st.error("⚠️ System health check failed. Some services are down.")
+                    st.json(health_data)
+                    st.stop()
+            else:
+                st.error(f"❌ Backend health check failed (Status: {health_response.status_code})")
+                st.stop()
+                
+        except requests.exceptions.ConnectionError:
+            st.error("❌ Cannot connect to backend server. Please ensure the backend is running.")
+            st.stop()
+        except requests.exceptions.Timeout:
+            st.error("❌ Backend health check timed out. Server may be slow or unavailable.")
+            st.stop()
+        except Exception as e:
+            st.error(f"❌ Unexpected error during health check: {e}")
+            st.stop()
 
 # --- SIDEBAR ---
 with st.sidebar:
