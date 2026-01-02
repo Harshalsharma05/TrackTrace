@@ -1,3 +1,4 @@
 streamlit
 requests
 audio-recorder-streamlit
+python-dotenv
