@@ -5,10 +5,10 @@ from app.config import DATABASE_URL
 def get_db_connection():
     return psycopg2.connect(DATABASE_URL)
 
-conn = get_db_connection()
-cur = conn.cursor()
+# conn = get_db_connection()
+# cur = conn.cursor()
 
-def insert_song(title: str, artist: str, duration: float) -> int:
+def insert_song(conn, cur, title: str, artist: str, duration: float) -> int:
 
     cur.execute(
         """
@@ -30,6 +30,8 @@ def insert_song(title: str, artist: str, duration: float) -> int:
     return song_id
 
 def insert_fingerprints(
+    conn,
+    cur,
     fingerprints: list[tuple[str, int]],
     song_id: int
 ):

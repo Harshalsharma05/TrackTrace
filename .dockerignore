@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+notebooks/
+scripts/
+app/data/songs/
+
+.env
+.env.*
+
+.git
+.gitignore
+
+node_modules/
+.vscode/
